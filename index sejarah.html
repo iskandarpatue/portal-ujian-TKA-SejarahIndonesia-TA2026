@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Portal CBT - TKA Sejarah 2026</title>
+  
+  <!-- Font Kaligrafi Dancing Script & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #b45309;        /* Bronze Klasik / Amber Sejarah */
+      --primary-hover: #92400e;
+      --accent: #d97706;         /* Gold / Warm Ochre */
+      --bg-canvas: #faf8f5;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Proteksi seleksi teks di dashboard/modal agar tetap responsif saat disentuh */
+    .overlay, header, .card-footer-signature, button {
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    input {
+      -webkit-user-select: auto;
+      user-select: auto;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* === BACKGROUND CERAH KLASIK / SEJARAH === */
+    .bg-mesh {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 12% 15%, rgba(254, 243, 199, 0.6) 0%, transparent 45%),
+        radial-gradient(circle at 88% 85%, rgba(255, 237, 213, 0.5) 0%, transparent 45%),
+        #faf8f5;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-size: 28px 28px;
+      background-image: 
+        linear-gradient(to right, rgba(180, 83, 9, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(180, 83, 9, 0.05) 1px, transparent 1px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* === OVERLAY MODAL === */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 9999;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      overflow-y: auto;
+    }
+
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 26px 22px 18px 22px;
+      border-radius: 22px;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 45px -10px rgba(180, 83, 9, 0.12);
+      z-index: 10;
+    }
+
+    /* Badge Ikon Jam Pasir (Simbol Kronologi & Waktu) */
+    .history-badge {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 12px auto;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 16px -4px rgba(180, 83, 9, 0.16);
+    }
+
+    .history-svg {
+      width: 44px;
+      height: 44px;
+    }
+
+    .sub-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 20px;
+      color: #92400e;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .card h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .card p.subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .info-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .info-box span.label {
+      display: block;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .info-box span.value {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Rules List */
+    .rules-list {
+      background: #fff1f2;
+      border: 1px dashed #fecdd3;
+      border-radius: 12px;
+      padding: 11px;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .rules-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: #be123c;
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+
+    .rules-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Tombol Utama */
+    .btn-glow {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #b45309, #92400e);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 20px -5px rgba(180, 83, 9, 0.35);
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-glow:active {
+      transform: scale(0.98);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      box-shadow: 0 10px 20px -5px rgba(220, 38, 38, 0.35);
+    }
+
+    /* === CATATAN KAKI KALIGRAFI POJOK KANAN BAWAH === */
+    .card-footer-signature {
+      margin-top: 14px;
+      text-align: right;
+      padding-right: 2px;
+    }
+
+    .signature-text {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #334155;
+      letter-spacing: 0.5px;
+    }
+
+    /* Input Token */
+    .token-box {
+      margin: 16px 0;
+      text-align: left;
+    }
+
+    .token-box label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .token-box input {
+      width: 100%;
+      padding: 13px;
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      color: #0f172a;
+      text-align: center;
+      letter-spacing: 3px;
+      font-weight: 800;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .token-box input:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .error-msg {
+      color: var(--danger);
+      font-size: 0.8rem;
+      margin-top: 6px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* === HEADER UJIAN AKTIF === */
+    header {
+      height: 60px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      position: relative;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .exam-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .violation-badge {
+      font-size: 0.7rem;
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    .timer-badge {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: ui-monospace, monospace;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #92400e;
+      letter-spacing: 1px;
+    }
+
+    .timer-warning {
+      background: #ef4444;
+      border-color: #dc2626;
+      color: #ffffff;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { opacity: 1; }
+      to { opacity: 0.65; }
+    }
+
+    /* === AREA GOOGLE FORM DENGAN SMOOTH TOUCH-SCROLL === */
+    .form-container {
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: calc(100% - 60px);
+      background: #ffffff;
+      z-index: 10;
+      
+      /* Mencegah layar terkandas di smartphone */
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-y !important;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Efek Visual Background Sejarah Cerah -->
+  <div class="bg-mesh"></div>
+  <div class="bg-grid"></div>
+
+  <!-- 1. Beranda Ujian / Start Screen -->
+  <div id="startScreen" class="overlay">
+    <div class="card">
+      
+      <!-- Ikon Jam Pasir Antik (Simbol Perjalanan Waktu & Kronologi) -->
+      <div class="history-badge">
+        <svg class="history-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Bingkai Jam Pasir -->
+          <rect x="16" y="10" width="32" height="5" rx="2.5" fill="#b45309"/>
+          <rect x="16" y="49" width="32" height="5" rx="2.5" fill="#b45309"/>
+          
+          <!-- Kaca Jam Pasir -->
+          <path d="M22 15H42C42 27 34 29 32 32C30 29 22 27 22 15Z" stroke="#b45309" stroke-width="2.5" fill="#fef3c7" fill-opacity="0.6"/>
+          <path d="M22 49H42C42 37 34 35 32 32C30 35 22 37 22 49Z" stroke="#b45309" stroke-width="2.5" fill="#fef3c7" fill-opacity="0.6"/>
+          
+          <!-- Pasir Waktu -->
+          <path d="M26 23C28 26 36 26 38 23H26Z" fill="#d97706"/>
+          <path d="M24 47C26 42 38 42 40 47H24Z" fill="#d97706"/>
+          <circle cx="32" cy="33" r="1.5" fill="#d97706"/>
+        </svg>
+      </div>
+
+      <span class="sub-badge">Tes Kemampuan Akademik</span>
+      <h1>TKA SEJARAH 2026</h1>
+      <p class="subtitle">Pahami kronologi, telaah peristiwa masa lampau, dan junjung sportivitas.</p>
+
+      <!-- Panel Info Ujian -->
+      <div class="info-grid">
+        <div class="info-box">
+          <span class="label">MATA PELAJARAN</span>
+          <span class="value">🏛️ Sejarah</span>
+        </div>
+        <div class="info-box">
+          <span class="label">DURASI WAKTU</span>
+          <span class="value">⏱️ 60 Menit</span>
+        </div>
+        <div class="info-box">
+          <span class="label">SISTEM UJIAN</span>
+          <span class="value">🔒 Terkunci (Kiosk)</span>
+        </div>
+        <div class="info-box">
+          <span class="label">MAKS. PERINGATAN</span>
+          <span class="value">⚠️ 3x Toleransi</span>
+        </div>
+      </div>
+
+      <!-- Aturan Ringkas -->
+      <div class="rules-list">
+        <div class="rules-item">
+          <span>•</span>
+          <span>Layar otomatis beralih ke <b>Mode Layar Penuh</b>.</span>
+        </div>
+        <div class="rules-item">
+          <span>•</span>
+          <span>Dilarang beralih tab, membalas chat, atau keluar browser.</span>
+        </div>
+        <div class="rules-item">
+          <span>•</span>
+          <span>Jika terkunci, hubungi pengawas untuk verifikasi <b>Token Resmi</b>.</span>
+        </div>
+      </div>
+
+      <button class="btn-glow" onclick="startExam()">
+        <span>Mulai Ujian Sejarah</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Catatan Kaki Kaligrafi Pojok Kanan Bawah -->
+      <div class="card-footer-signature">
+        <span class="signature-text">By.Pk Guru Iskandar-TimItSmanbatPan</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 2. Modal Peringatan Pelanggaran (Wajib Token) -->
+  <div id="warningModal" class="overlay hidden">
+    <div class="card" style="border-color: #fca5a5;">
+      <div style="font-size: 2.2rem; margin-bottom: 6px;">⚠️</div>
+      <h1 style="color: #dc2626; font-size: 1.25rem;">UJIAN TERKUNCI!</h1>
+      <p id="warningText" class="subtitle" style="margin-top: 6px; color: #475569;">Terdeteksi meninggalkan halaman ujian.</p>
+      
+      <div class="token-box">
+        <label for="inputToken">MASUKKAN TOKEN PENGAWAS:</label>
+        <input type="text" id="inputToken" placeholder="••••••••••••" autocomplete="off">
+        <p id="tokenError" class="error-msg hidden">Token salah! Silakan panggil pengawas.</p>
+      </div>
+
+      <button class="btn-glow btn-danger" onclick="unlockExam()">Buka Kunci Layar</button>
+    </div>
+  </div>
+
+  <!-- 3. Modal Ujian Dihentikan Total -->
+  <div id="lockScreen" class="overlay hidden">
+    <div class="card" style="border-color: #fca5a5;">
+      <div style="font-size: 2.2rem; margin-bottom: 6px;">🛑</div>
+      <h1 style="color: #dc2626; font-size: 1.3rem;">AKSES DITUTUP</h1>
+      <p id="lockMessage" class="subtitle" style="margin-top: 8px;">Ujian Anda telah dihentikan otomatis oleh sistem.</p>
+    </div>
+  </div>
+
+  <!-- 4. Header Ujian Aktif -->
+  <header>
+    <div class="header-info">
+      <!-- Mini Column/Hourglass Icon -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 22h14"></path>
+        <path d="M5 2h14"></path>
+        <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+        <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
+      </svg>
+      <div class="header-titles">
+        <span class="exam-title">TKA Sejarah 2026</span>
+        <span class="violation-badge" id="violationText">Pelanggaran: 0/3</span>
+      </div>
+    </div>
+    <div class="timer-badge" id="timer">60:00</div>
+  </header>
+
+  <!-- Area Google Form Resmi Sejarah (Mode Semat Aktif) -->
+  <div class="form-container">
+    <iframe 
+      id="examFrame" 
+      src="https://docs.google.com/forms/d/e/1FAIpQLSf9EQlzd8JEPrr5zXxHIH7K54QlShizBhEDjKbDuZ-PpFMkGg/viewform?embedded=true"
+      frameborder="0" 
+      marginheight="0" 
+      marginwidth="0"
+      scrolling="yes">
+      Memuat formulir TKA Sejarah 2026...
+    </iframe>
+  </div>
+
+  <script>
+    // === KONFIGURASI SISTEM UJIAN ===
+    const PROCTOR_TOKEN = "TKASEJARAH2026"; // Token Pengawas Sejarah
+    let examDurationMinutes = 60;           
+    const maxViolations = 3;                
+
+    let timeRemaining = examDurationMinutes * 60;
+    let violationCount = 0;
+    let timerInterval = null;
+    let isExamActive = false;
+
+    // Elemen DOM
+    const startScreen = document.getElementById('startScreen');
+    const warningModal = document.getElementById('warningModal');
+    const lockScreen = document.getElementById('lockScreen');
+    const lockMessage = document.getElementById('lockMessage');
+    const timerDisplay = document.getElementById('timer');
+    const violationText = document.getElementById('violationText');
+    const warningText = document.getElementById('warningText');
+    const inputToken = document.getElementById('inputToken');
+    const tokenError = document.getElementById('tokenError');
+
+    // 1. Memulai Ujian & Layar Penuh
+    function startExam() {
+      const docEl = document.documentElement;
+      
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch(() => {});
+      } else if (docEl.webkitRequestFullscreen) {
+        docEl.webkitRequestFullscreen();
+      }
+
+      startScreen.classList.add('hidden');
+      isExamActive = true;
+      startTimer();
+    }
+
+    // 2. Logika Hitung Mundur Waktu
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          finishExam("Waktu pengerjaan ujian telah berakhir!");
+          return;
+        }
+
+        timeRemaining--;
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+
+        timerDisplay.textContent = 
+          `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        if (timeRemaining <= 300) {
+          timerDisplay.classList.add('timer-warning');
+        }
+      }, 1000);
+    }
+
+    // 3. Pencatatan Pelanggaran
+    function recordViolation(reason) {
+      if (!isExamActive) return;
+
+      violationCount++;
+      violationText.textContent = `Pelanggaran: ${violationCount}/${maxViolations}`;
+
+      if (violationCount >= maxViolations) {
+        finishExam(`Ujian Dihentikan! Anda telah mencapai batas maksimal (${maxViolations}x) pelanggaran.`);
+      } else {
+        warningText.innerHTML = `Terdeteksi: <b>${reason}</b>.<br><br>Pelanggaran ke-<b>${violationCount}</b> dari ${maxViolations}. Panggil pengawas untuk membuka kunci kembali.`;
+        
+        inputToken.value = "";
+        tokenError.classList.add('hidden');
+        warningModal.classList.remove('hidden');
+      }
+    }
+
+    // 4. Verifikasi Token Pengawas
+    function unlockExam() {
+      const enteredToken = inputToken.value.trim().toUpperCase();
+
+      if (enteredToken === PROCTOR_TOKEN) {
+        tokenError.classList.add('hidden');
+        warningModal.classList.add('hidden');
+
+        // Balikkan ke fullscreen
+        const docEl = document.documentElement;
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          if (docEl.requestFullscreen) {
+            docEl.requestFullscreen().catch(() => {});
+          } else if (docEl.webkitRequestFullscreen) {
+            docEl.webkitRequestFullscreen();
+          }
+        }
+      } else {
+        tokenError.classList.remove('hidden');
+        inputToken.value = "";
+        inputToken.focus();
+      }
+    }
+
+    // 5. Menghentikan Ujian Permanen
+    function finishExam(message) {
+      isExamActive = false;
+      clearInterval(timerInterval);
+      warningModal.classList.add('hidden');
+      
+      const frame = document.getElementById('examFrame');
+      if (frame) frame.remove();
+
+      lockMessage.textContent = message;
+      lockScreen.classList.remove('hidden');
+
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    // === DETEKSI KECURANGAN ===
+
+    // Deteksi beralih aplikasi / tab minim
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && isExamActive) {
+        recordViolation("Membuka aplikasi lain atau berganti layar");
+      }
+    });
+
+    // Deteksi keluar layar penuh
+    document.addEventListener('fullscreenchange', handleFullscreenExit);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenExit);
+
+    function handleFullscreenExit() {
+      const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!isFullscreen && isExamActive && warningModal.classList.contains('hidden')) {
+        recordViolation("Menutup mode layar penuh");
+      }
+    }
+
+    // Blokir klik kanan
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+  </script>
+</body>
+</html>
